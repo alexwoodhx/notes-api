@@ -1,4 +1,4 @@
-import { createNote, getNotes, getNoteById, updateNote, deleteNote } from "./notes.service";
+import { createNote, getNotes, getNoteById, updateNote, deleteNote } from "./notes.service.js";
 
 export const create = async (req, res) => {
     try {
