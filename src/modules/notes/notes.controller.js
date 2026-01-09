@@ -9,10 +9,29 @@ export const create = async (req, res) => {
     }
 };
 
+// export const list = async (req, res) => {
+//     try {
+//         const notes = await getNotes(req.user.id);
+//         res.json(notes);
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// };
+
 export const list = async (req, res) => {
     try {
-        const notes = await getNotes(req.user.id);
-        res.json(notes);
+        const options = {
+            page: Number(req.query.page) || 1,
+            limit: Number(req.query.limit) || 10,
+            completed:
+                req.query.completed !== undefined
+                ? req.query.completed === "true"
+                : undefined,
+            sort: req.query.sort,
+        };
+
+        const result = await getNotes(req.user.id, options);
+        res.json(result);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
