@@ -1,4 +1,5 @@
 import Note from "./note.model.js";
+import { AppError } from "../../utils/AppError.js";
 
 export const createNote = async ({ title, content, tags }, userId) => {
   return Note.create({
@@ -8,10 +9,6 @@ export const createNote = async ({ title, content, tags }, userId) => {
     user: userId,
   });
 };
-
-// export const getNotes = async (userId) => {
-//   return Note.find({ user: userId }).sort({ createdAt: -1 });
-// };
 
 export const getNotes = async (userId, options = {}) => {
   const {
@@ -28,7 +25,7 @@ export const getNotes = async (userId, options = {}) => {
   }
 
   const [sortField, sortOrder] = sort.split(":");
-  const sortBy = { [sortField]: sortOrder === "asc" ? 1: -1};
+  const sortBy = { [sortField]: sortOrder === "asc" ? 1 : -1};
 
   const skip = (page - 1) * limit;
 
@@ -51,7 +48,9 @@ export const getNotes = async (userId, options = {}) => {
 
 export const getNoteById = async (noteId, userId) => {
   const note = await Note.findOne({ _id: noteId, user: userId });
-  if (!note) throw new Error("Note not found");
+  if (!note) {
+    throw new AppError("Note not found", 404);
+  }
   return note;
 };
 
@@ -62,11 +61,15 @@ export const updateNote = async (noteId, userId, updates) => {
     { new: true }
   );
 
-  if (!note) throw new Error("Note not found");
+  if (!note) {
+    throw new AppError("Note not found", 404);
+  }
   return note;
 };
 
 export const deleteNote = async (noteId, userId) => {
   const note = await Note.findOneAndDelete({ _id: noteId, user: userId });
-  if (!note) throw new Error("Note not found");
+  if (!note) {
+    throw new AppError("Note not found", 404);
+  }
 };
