@@ -1,6 +1,11 @@
 # Notes API
 
-RESTful API for managing notes with user authentication. Built with Node.js, Express, and MongoDB. Includes JWT authentication, pagination, filtering, and input validation.
+A RESTful API for managing personal notes with user authentication. Built with Node.js, Express, and MongoDB. The project focuses on clean API design, sensible defaults, and production-style concerns like validation, error handling, security, and testing.
+
+## Why This Project Exists
+
+This project was built as a practical backend exercise rather than a tutorial clone. The aim was to build something small but realistic, with proper authentication, validation, pagination, testing, and basic security concerns handled in a way you’d expect to see in a real codebase.
+
 
 ## Features
 
@@ -13,6 +18,9 @@ RESTful API for managing notes with user authentication. Built with Node.js, Exp
 - **Input Validation** - Request validation using express-validator
 - **Error Handling** - Centralised error handling with custom error classes
 - **Testing** - Test suite with Jest and Supertest using in-memory MongoDB
+- **Rate Limiting** – Global request limits with stricter limits on auth routes
+- **Security Hardening** – Secure HTTP headers, CORS configuration, and payload size limits
+
 
 ## Tech Stack
 
@@ -180,9 +188,10 @@ Authorization: Bearer <your-jwt-token>
 
 ## Error Responses
 
-Errors follow a consistent format:
+Errors are returned in a consistent JSON format.
 
-**Validation Error** (400):
+**Validation errors** return a list of fields and messages:
+
 ```json
 {
   "errors": [
@@ -192,14 +201,7 @@ Errors follow a consistent format:
     }
   ]
 }
-```
 
-**Application Error** (4xx/5xx):
-```json
-{
-  "status": "fail" | "error",
-  "message": "Error message here"
-}
 ```
 
 ## Testing
@@ -268,6 +270,17 @@ notes-api/
 - **Input Validation**: All user inputs are validated before processing
 - **Error Messages**: Generic error messages for security-sensitive endpoints
 - **Authentication Required**: Protected routes require valid JWT tokens
+- **Rate limiting** using `express-rate-limit` to prevent abuse
+  - Global limits applied to all routes
+  - Stricter limits on authentication endpoints to reduce brute-force attempts
+- **Secure HTTP headers** via `helmet`
+- **CORS configuration** to restrict browser-based access to known origins
+- **Request size limits** to avoid overly large payloads
+- **Environment-aware error handling**
+  - Stack traces are shown in development
+  - Production responses avoid leaking internal details
+
+These features are intentionally kept simple and readable rather than over-engineered.
 
 ## Development
 
