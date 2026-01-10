@@ -10,6 +10,12 @@ export const globalLimiter = rateLimit({
 export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 10,
-    message: "Too many login attempts. Please try again later.",
+    handler: (req, res) => {
+        return res.status(429).json({
+            message: "Too many login attempts. Please try again later."
+        });
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
   });
   

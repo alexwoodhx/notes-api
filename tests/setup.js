@@ -11,8 +11,12 @@ export const connectDB = async () => {
 };
 
 export const closeDB = async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
+    if (mongoose.connection.readyState !== 0) {
+        await mongoose.disconnect();
+    }
+    if (mongoServer) {
+        await mongoServer.stop();
+    }
 };
 
 export const clearDB = async () => {

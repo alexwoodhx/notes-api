@@ -1,9 +1,15 @@
-export const errorHandler = (err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
-    const message = err.isOperational ? err.message : "Something went wrong";
+import { env } from "../config/env.js";
 
-    res.status(statusCode).json({
-        status: err.status || "error",
-        message,
-    });
+export const errorHandler = (err, req, res, next) => {
+  const status = err.statusCode || 500;
+
+  const response = {
+    message: err.message || "Internal Server Error",
+  };
+
+  if (env.nodeEnv !== "production") {
+    response.stack = err.stack;
+  }
+
+  res.status(status).json(response);
 };
