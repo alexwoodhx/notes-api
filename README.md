@@ -6,6 +6,9 @@ A RESTful API for managing personal notes with user authentication. Built with N
 
 This project was built as a practical backend exercise rather than a tutorial clone. The aim was to build something small but realistic, with proper authentication, validation, pagination, testing, and basic security concerns handled in a way you’d expect to see in a real codebase.
 
+A live production instance is also available (see Deployment section below).
+
+
 
 ## Features
 
@@ -293,4 +296,35 @@ node scripts/seedNotes.js
 ```
 
 **Note**: You'll need to update the `USER_ID` in the seed script with a valid user ID from your database.
+
+
+## Deployment
+
+The API is deployed and running in production.
+
+- **Hosting**: Render
+- **Database**: MongoDB Atlas
+- **Environment**: Production
+
+Base URL: https://notes-api-lhik.onrender.com
+
+The `/health` endpoint can be used to check service status.
+
+## Notes
+
+This project is intended as a backend-focused API rather than a full product. 
+There is no frontend included, and authentication is handled via JWTs passed in the `Authorization` header.
+
+The implementation favours clarity and maintainability over edge-case optimisation.
+
+## Possible Future Improvements
+
+- Full-text search across note content
+- Tag-based filtering
+- Refresh token support
+- API documentation using OpenAPI / Swagger
+
+
+
+
 
