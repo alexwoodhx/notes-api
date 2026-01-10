@@ -1,29 +1,44 @@
 import User from "./user.model.js";
 import jwt from "jsonwebtoken";
 import { env } from "../../config/env.js";
+import { AppError } from "../../utils/AppError.js";
 
-//check if user already exists, if not, create new user
-export const registerUser = async ({email, password}) => {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) throw new Error("Email already in use");
+// Register a new user
+export const registerUser = async ({ email, password }) => {
+  const existingUser = await User.findOne({ email });
 
-    const user = new User({ email, password});
-    await user.save();
+  if (existingUser) {
+    throw new AppError("Email already in use", 409);
+  }
 
-    return user;
+  const user = new User({ email, password });
+  await user.save();
+
+  return user;
 };
 
-//Check credentials and assign JWT
-export const loginUser = async ({email, password}) => {
-    const user = await User.findOne({ email });
-    if (!user) throw new Error("Invalid email");
+// Check credentials and assign JWT
+export const loginUser = async ({ email, password }) => {
+  const user = await User.findOne({ email });
 
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) throw new Error("Invalid password");
+  // Deliberately vague for security
+  if (!user) {
+    throw new AppError("Invalid credentials", 401);
+  }
 
-    const token = jwt.sign( {userId: user._id}, env.jwtSecret, {
-        expiresIn: env.jwtExpiresIn,
-    });
+  const isMatch = await user.comparePassword(password);
 
-    return { user, token };
-}
+  if (!isMatch) {
+    throw new AppError("Invalid credentials", 401);
+  }
+
+  const token = jwt.sign(
+    { userId: user._id },
+    env.jwtSecret,
+    {
+      expiresIn: env.jwtExpiresIn,
+    }
+  );
+
+  return { user, token };
+};
